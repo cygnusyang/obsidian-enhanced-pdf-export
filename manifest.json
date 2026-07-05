@@ -1,9 +1,9 @@
 {
-  "id": "ai-native-export",
-  "name": "AI Native Export",
+  "id": "enhanced-pdf-export",
+  "name": "Enhanced PDF Export",
   "version": "0.1.0",
   "minAppVersion": "1.5.0",
-  "description": "Export AI-native Markdown to PDF using Obsidian rendered preview, including inline HTML, SVG, Mermaid, and other visual content.",
+  "description": "A stronger PDF export for rendered Markdown, preserving HTML, SVG, Mermaid, and rich visual content better than Obsidian default export.",
   "author": "Local",
   "authorUrl": "",
   "isDesktopOnly": true

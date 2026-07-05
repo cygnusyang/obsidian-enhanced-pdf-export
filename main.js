@@ -15,7 +15,7 @@ const DEFAULT_SETTINGS = {
   marginRight: 0.55,
 };
 
-module.exports = class AiNativeExportPlugin extends Plugin {
+module.exports = class EnhancedPdfExportPlugin extends Plugin {
   async onload() {
     this.settings = Object.assign({}, DEFAULT_SETTINGS, await this.loadData());
 
@@ -76,14 +76,14 @@ module.exports = class AiNativeExportPlugin extends Plugin {
         this.openPath(pdfPath);
       }
     } catch (error) {
-      console.error("AI Native Export failed", error);
+      console.error("Enhanced PDF Export failed", error);
       new Notice(`PDF export failed: ${error.message || error}`);
     }
   }
 
   async renderMarkdown(file, markdown) {
     const root = document.createElement("div");
-    root.className = "markdown-reading-view ai-native-export-render-root";
+    root.className = "markdown-reading-view enhanced-pdf-export-render-root";
     const content = root.createDiv({ cls: "markdown-preview-view markdown-rendered" });
     document.body.appendChild(root);
     try {
