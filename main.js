@@ -396,19 +396,8 @@ module.exports = class EnhancedPdfExportPlugin extends Plugin {
 
   async writePdf(file, html, overrides = {}) {
     const electron = this.getElectron();
-    const fs = window.require("fs");
-    const path = window.require("path");
-    const os = window.require("os");
-
-    const adapter = this.app.vault.adapter;
-    if (typeof adapter.getFullPath !== "function") {
-      throw new Error("This plugin requires the desktop local file adapter.");
-    }
-
-    const sourcePath = adapter.getFullPath(file.path);
-    const outputPath = this.buildOutputPath(sourcePath, path);
-    const tmpPath = path.join(os.tmpdir(), `obsidian-pdf-ready-${Date.now()}-${Math.random().toString(16).slice(2)}.html`);
-    fs.writeFileSync(tmpPath, html, "utf8");
+    const outputPath = this.buildOutputPath(file);
+    const htmlUrl = `data:text/html;charset=utf-8,${encodeURIComponent(html)}`;
 
     const BrowserWindow = electron.BrowserWindow || electron.remote?.BrowserWindow;
     if (!BrowserWindow) {
@@ -427,7 +416,7 @@ module.exports = class EnhancedPdfExportPlugin extends Plugin {
     });
 
     try {
-      await win.loadFile(tmpPath);
+      await win.loadURL(htmlUrl);
       await win.webContents.executeJavaScript(`
         Promise.resolve(document.fonts && document.fonts.ready)
           .catch(function () {})
@@ -460,30 +449,30 @@ module.exports = class EnhancedPdfExportPlugin extends Plugin {
           right: this.settings.marginRight,
         },
       });
-      fs.writeFileSync(outputPath, pdfBuffer);
+      await this.writeBinaryFile(outputPath, pdfBuffer);
       return outputPath;
     } finally {
       win.close();
-      try {
-        fs.unlinkSync(tmpPath);
-      } catch (_) {}
     }
   }
 
-  buildOutputPath(sourcePath, path) {
-    const dir = path.dirname(sourcePath);
-    const ext = path.extname(sourcePath);
-    const base = path.basename(sourcePath, ext);
+  buildOutputPath(file) {
+    const dir = file.parent?.path && file.parent.path !== "/" ? `${file.parent.path}/` : "";
     const suffix = this.settings.outputSuffix || "";
-    return path.join(dir, `${base}${suffix}.pdf`);
+    return `${dir}${file.basename}${suffix}.pdf`;
+  }
+
+  async writeBinaryFile(path, buffer) {
+    const data = buffer.buffer.slice(buffer.byteOffset, buffer.byteOffset + buffer.byteLength);
+    if (await this.app.vault.adapter.exists(path)) {
+      await this.app.vault.adapter.writeBinary(path, data);
+      return;
+    }
+    await this.app.vault.createBinary(path, data);
   }
 
   openPath(filePath) {
-    try {
-      const electron = this.getElectron();
-      const shell = electron.shell || electron.remote?.shell;
-      if (shell) shell.openPath(filePath);
-    } catch (_) {}
+    this.app.workspace.openLinkText(filePath, "", false).catch(() => {});
   }
 
   getElectron() {
