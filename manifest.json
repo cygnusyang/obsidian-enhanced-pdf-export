@@ -1,9 +1,9 @@
 {
-  "id": "pdf-ready-export",
-  "name": "PDF Ready Export",
+  "id": "ai-native-export",
+  "name": "AI Native Export",
   "version": "0.1.0",
   "minAppVersion": "1.5.0",
-  "description": "Export the active Markdown file to PDF using Obsidian's rendered preview, including inline HTML, SVG, and Mermaid output.",
+  "description": "Export AI-native Markdown to PDF using Obsidian rendered preview, including inline HTML, SVG, Mermaid, and other visual content.",
   "author": "Local",
   "authorUrl": "",
   "isDesktopOnly": true
