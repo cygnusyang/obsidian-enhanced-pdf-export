@@ -1,10 +1,10 @@
 {
   "id": "enhanced-pdf-export",
   "name": "Enhanced PDF Export",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "minAppVersion": "1.5.0",
   "description": "A stronger PDF export for rendered Markdown, preserving HTML, SVG, Mermaid, and rich visual content better than Obsidian default export.",
-  "author": "Local",
-  "authorUrl": "",
+  "author": "Cygnus Yang",
+  "authorUrl": "https://github.com/cygnusyang",
   "isDesktopOnly": true
 }
