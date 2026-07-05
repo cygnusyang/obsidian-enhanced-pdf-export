@@ -1,0 +1,59 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - "[0-9]+.[0-9]+.[0-9]+"
+
+permissions:
+  contents: write
+  id-token: write
+  attestations: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Validate version
+        run: |
+          version="$(node -p "require('./manifest.json').version")"
+          tag="${GITHUB_REF_NAME}"
+          if [ "$version" != "$tag" ]; then
+            echo "manifest.json version ($version) does not match tag ($tag)" >&2
+            exit 1
+          fi
+
+      - name: Validate plugin files
+        run: |
+          node --check main.js
+          test -s manifest.json
+          test -s main.js
+          test -s styles.css
+
+      - name: Prepare release assets
+        run: |
+          mkdir -p release
+          cp manifest.json main.js styles.css release/
+
+      - name: Generate artifact attestations
+        uses: actions/attest@v4
+        with:
+          subject-path: |
+            release/manifest.json
+            release/main.js
+            release/styles.css
+
+      - name: Create GitHub release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release create "${GITHUB_REF_NAME}" \
+            release/manifest.json \
+            release/main.js \
+            release/styles.css \
+            --title "${GITHUB_REF_NAME}" \
+            --notes "Release ${GITHUB_REF_NAME}."
