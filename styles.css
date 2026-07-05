@@ -1,0 +1,10 @@
+.pdf-ready-export-render-root {
+  position: fixed;
+  left: -100000px;
+  top: 0;
+  width: 960px;
+  min-height: 100px;
+  pointer-events: none;
+  opacity: 0;
+}
+
