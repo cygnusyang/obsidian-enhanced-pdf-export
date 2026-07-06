@@ -87,12 +87,44 @@ module.exports = class EnhancedPdfExportPlugin extends Plugin {
     const content = root.createDiv({ cls: "markdown-preview-view markdown-rendered" });
     document.body.appendChild(root);
     try {
-      await MarkdownRenderer.render(this.app, markdown, content, file.path, this);
+      const protectedMarkdown = this.protectRawSvgBlocks(markdown);
+      await MarkdownRenderer.render(this.app, protectedMarkdown.markdown, content, file.path, this);
+      this.restoreRawSvgBlocks(content, protectedMarkdown.blocks);
       await this.waitForRenderSettled(content);
       this.inlineSvgDimensions(content);
       return content.innerHTML;
     } finally {
       root.remove();
+    }
+  }
+
+  protectRawSvgBlocks(markdown) {
+    const blocks = [];
+    let protectedMarkdown = markdown.replace(/<figure\b[\s\S]*?<svg\b[\s\S]*?<\/svg>[\s\S]*?<\/figure>/gi, (block) => {
+      return this.createRawSvgPlaceholder(blocks, block);
+    });
+
+    protectedMarkdown = protectedMarkdown.replace(/<svg\b[\s\S]*?<\/svg>/gi, (block) => {
+      return this.createRawSvgPlaceholder(blocks, block);
+    });
+
+    return { markdown: protectedMarkdown, blocks };
+  }
+
+  createRawSvgPlaceholder(blocks, block) {
+    const index = blocks.length;
+    blocks.push(block);
+    return `<div data-enhanced-pdf-raw-svg="${index}"></div>`;
+  }
+
+  restoreRawSvgBlocks(container, blocks) {
+    for (const placeholder of Array.from(container.querySelectorAll("[data-enhanced-pdf-raw-svg]"))) {
+      const index = Number(placeholder.getAttribute("data-enhanced-pdf-raw-svg"));
+      const block = blocks[index];
+      if (!block) continue;
+      const template = document.createElement("template");
+      template.innerHTML = block.trim();
+      placeholder.replaceWith(template.content);
     }
   }
 

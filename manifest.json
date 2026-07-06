@@ -1,7 +1,7 @@
 {
   "id": "enhanced-pdf-export",
   "name": "Enhanced PDF Export",
-  "version": "0.1.4",
+  "version": "0.1.5",
   "minAppVersion": "1.5.0",
   "description": "A stronger PDF export for rendered Markdown, preserving HTML, SVG, Mermaid, and rich visual content better than the default exporter.",
   "author": "Cygnus Yang",
