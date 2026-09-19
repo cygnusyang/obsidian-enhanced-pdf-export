@@ -1,5 +1,7 @@
 # Enhanced PDF Export
 
+English | [简体中文](README.zh-CN.md)
+
 A stronger PDF exporter for rendered Markdown.
 
 Enhanced PDF Export is designed for notes that contain rich visual content such as Mermaid diagrams, inline HTML, SVG, tables, callouts, and images. It renders the active Markdown file through the app preview renderer first, then exports that rendered result to PDF with Electron printing.
@@ -91,6 +93,8 @@ For faster iteration, install the `hot-reload` development plugin and create a l
 
 ## 中文说明
 
-Enhanced PDF Export 是一个更强的 Markdown PDF 导出插件，适合导出包含 Mermaid、HTML、SVG、表格、Callout 和图片的富 Markdown 文档。插件会先使用预览渲染器生成页面，再将渲染后的结果导出为 PDF。
+See [简体中文说明 (README.zh-CN.md)](README.zh-CN.md) for the full Chinese documentation.
 
-安装方式：把 `manifest.json`、`main.js`、`styles.css` 放到 `<你的 vault>/.obsidian/plugins/enhanced-pdf-export/`，然后在 `Settings -> Community plugins` 中启用 `Enhanced PDF Export`。
+---
+
+**Cygnus Yang** · [GitHub](https://github.com/cygnusyang) · [Enhanced PDF Export](https://github.com/cygnusyang/obsidian-enhanced-pdf-export) · MIT License
